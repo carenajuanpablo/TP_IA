@@ -128,8 +128,9 @@ class mercadoArtificial(SearchProblem):
         camion_encontrado = (camion_estado, ciudad_estado, litros_estado, paquetes_estado)
         return state
 
+    # Calcula la cantidad de paquetes que quedan por entregar
     def heuristic (self, state):
         return len(state[1])
 
-    
+
 
