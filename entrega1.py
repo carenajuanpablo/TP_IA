@@ -90,7 +90,6 @@ class mercadoArtificial(SearchProblem):
                     # Si tengo nafta suficiente, genero nueva acción y la agrego a la lista
                     nueva_accion = nrocam, ciudad[0], consumo_necesario
                     acciones.append(nueva_accion)
-
         return acciones
 
     def result(self, state, action):
@@ -100,8 +99,37 @@ class mercadoArtificial(SearchProblem):
         for camion in camiones:
             if (camion[0] == id_camion):
                 camion_encontrado = camion
-
         camion_estado, ciudad_estado, litros_estado, paquetes_estado = camion_encontrado
 
+        # Recorremos la lista de paquetes para averiguar si algunos de ellos
+        # esta para ser recogido por el camión que se encuentra en esa ciudad
+        for paquete in paquetes:
+            id_paquete, origen_paquete, destino_paquete = paquete
+            if (origen_paquete == ciudad_estado):
+                paquetes_estado.append(paquete)
 
+        # Recorremos la lista de paquetes del camión que identificamos en el
+        # accion para entregarlos en caso que la ciudad del camión sea igual
+        # a la ciudad de entrega del paquete
+        for paquetes_camion in paquetes_estado:
+            id_paquete, origen_paquete, destino_paquete = paquetes_camion
+            if (destino_paquete == ciudad_estado):
+                paquetes_estado.remove(paquetes_camion)
+
+        # Si nos encintramos en una ciudad de carga entonces llenamos el tanque
+        # y actualizamos el valor de litros del camion
+        litros_estado = litros_estado - consumo_necesario
+        if ciudad_a_mover in ciudad_de_carga:
+            for camion in camiones:
+                if camion[0] == nrocamion:
+                    tanque = camion[2]
+            litros_estado = tanque
+
+        camion_encontrado = (camion_estado, ciudad_estado, litros_estado, paquetes_estado)
+        return state
+
+    def heuristic (self, state):
+        return len(state[1])
+
+    
 
